@@ -45,11 +45,11 @@ curl -s localhost:8000/generate \
 
 > 💡 This is an instruction-tuned model — wrap prompts in its chat format (see the model card) for best results.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-falcon:latest
-docker run -d --name falcon --network none <DOCKERHUB_USERNAME>/airlock-falcon:latest
+docker pull ghcr.io/<OWNER>/airlock-falcon:latest
+docker run -d --name falcon --network none ghcr.io/<OWNER>/airlock-falcon:latest
 ```
 
 ## Security — how internet access is blocked & why

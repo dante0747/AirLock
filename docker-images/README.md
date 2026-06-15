@@ -1,8 +1,9 @@
-# Pre-built images (Docker Hub catalog)
+# Pre-built images (ghcr.io catalog)
 
-This directory documents the pre-built **Airlock** images published to Docker Hub
-by the [CI/CD workflow](../.github/workflows/docker-build.yml). The images are
-built automatically on every push to `main` and on a daily schedule.
+This directory documents the pre-built **Airlock** images published to the
+GitHub Container Registry (`ghcr.io`) by the
+[CI/CD workflow](../.github/workflows/docker-build.yml). The images are built
+automatically on every push to `main` and on a daily schedule.
 
 > **Why a directory and not a branch?** Keeping the catalog as docs alongside
 > the Dockerfiles means it versions together with the code that produces the
@@ -12,9 +13,9 @@ built automatically on every push to `main` and on a daily schedule.
 
 ## Image catalog
 
-Replace `<DOCKERHUB_USERNAME>` with the account configured in the
-`DOCKERHUB_USERNAME` GitHub secret. Every image is published as
-`<DOCKERHUB_USERNAME>/<image>`.
+Every image is published under the repo owner as `ghcr.io/<OWNER>/<image>`.
+Replace `<OWNER>` with your **lowercased** GitHub owner (ghcr.io requires the
+path to be lowercase).
 
 | Model | Image | Gated? | Notes |
 |-------|-------|:------:|-------|
@@ -49,18 +50,29 @@ Every successful CI run pushes three tags per model:
 ## Pulling and running
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-gpt2:latest
+docker pull ghcr.io/<OWNER>/airlock-gpt2:latest
 
 # Run fully air-gapped (no network interface in the container)
-docker run -d --name gpt2 --network none <DOCKERHUB_USERNAME>/airlock-gpt2:latest
+docker run -d --name gpt2 --network none ghcr.io/<OWNER>/airlock-gpt2:latest
 docker exec gpt2 python -c "import serve; print(serve.generate('Hello', 32))"
 ```
 
 Pin to a dated or sha tag for reproducibility:
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-gpt2:20260616
+docker pull ghcr.io/<OWNER>/airlock-gpt2:20260616
 ```
+
+> **Private by default.** New ghcr.io packages start private — to pull one before
+> you make it public, authenticate first with a token that has the `read:packages`
+> scope:
+>
+> ```bash
+> echo "$GHCR_PAT" | docker login ghcr.io -u <OWNER> --password-stdin
+> ```
+>
+> Or set the package to **Public** (repo → Packages → the image → Package
+> settings) to pull without any login.
 
 ## Licensing / redistribution note
 
@@ -76,8 +88,8 @@ Pre-built images bundle model weights, which carry their **own** licenses:
 
 ## How publishing works
 
-1. CI logs in to Docker Hub using the `DOCKERHUB_USERNAME` / `DOCKERHUB_TOKEN`
-   secrets.
+1. CI logs in to `ghcr.io` using the built-in `GITHUB_TOKEN` (no personal
+   secrets needed).
 2. Each model in the build matrix is built from its `Dockerfile`.
 3. Images are tagged (`latest` / date / sha) and pushed.
 4. Pull requests build the images **but do not push** them.

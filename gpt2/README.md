@@ -62,11 +62,11 @@ curl -s localhost:8000/generate \
 > ⚠️ `-p 8000:8000` only works with a network attached. With `--network none`
 > there are no ports to publish — use the `docker exec` method above.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-gpt2:latest
-docker run -d --name gpt2 --network none <DOCKERHUB_USERNAME>/airlock-gpt2:latest
+docker pull ghcr.io/<OWNER>/airlock-gpt2:latest
+docker run -d --name gpt2 --network none ghcr.io/<OWNER>/airlock-gpt2:latest
 ```
 
 Available tags: `latest`, `YYYYMMDD` (daily), and `<git-sha>`. See

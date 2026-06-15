@@ -66,14 +66,14 @@ curl -s localhost:8000/generate \
 > ⚠️ `-p 8000:8000` only works with a network attached. With `--network none`
 > there are no ports to publish — use the `docker exec` method above.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-llama:latest
-docker run -d --name llama --network none <DOCKERHUB_USERNAME>/airlock-llama:latest
+docker pull ghcr.io/<OWNER>/airlock-llama:latest
+docker run -d --name llama --network none ghcr.io/<OWNER>/airlock-llama:latest
 ```
 
-> Note: pre-built images on Docker Hub use the **open** default model. Gated
+> Note: pre-built images in the registry use the **open** default model. Gated
 > Meta weights cannot be redistributed — build those locally with your token.
 
 ## Security — how internet access is blocked & why

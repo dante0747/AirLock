@@ -47,11 +47,11 @@ curl -s localhost:8000/generate \
 
 > 💡 This is a chat model — wrap prompts in its chat template (see the model card) for best results.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-zephyr:latest
-docker run -d --name zephyr --network none <DOCKERHUB_USERNAME>/airlock-zephyr:latest
+docker pull ghcr.io/<OWNER>/airlock-zephyr:latest
+docker run -d --name zephyr --network none ghcr.io/<OWNER>/airlock-zephyr:latest
 ```
 
 ## Security — how internet access is blocked & why

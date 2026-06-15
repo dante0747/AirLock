@@ -29,7 +29,7 @@ common contributions: **adding a new model** and **improving an existing one**.
 3. **Set the default `MODEL_ID`** via the `ARG MODEL_ID=...` in the Dockerfile.
 4. **Write the model README** following the structure used by the others:
    overview table, build locally, run (air-gapped + internal-network), pull from
-   Docker Hub, and a security section.
+   ghcr.io, and a security section.
 5. **Register it in CI.** Add the directory name to the `matrix.model` list in
    [`.github/workflows/docker-build.yml`](.github/workflows/docker-build.yml).
 6. **Update the root README** "Available models" table.

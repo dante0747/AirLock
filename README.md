@@ -11,9 +11,10 @@ run with **no internet access** — like a sealed chamber for your model. Ideal 
 sensitive prompts, regulated environments, or anywhere "the model must not phone
 home" is a hard requirement.
 
-> Replace `<OWNER>/<REPO>` in the badge above and `<DOCKERHUB_USERNAME>`
-> throughout with your own values. "Airlock" is just the project name — rename
-> the repo and the `airlock-*` image prefix to whatever you like.
+> Replace `<OWNER>/<REPO>` in the badge above and `<OWNER>` in the image paths
+> throughout with your own GitHub owner/repo (use the **lowercased** owner for
+> the image paths — ghcr.io requires it). "Airlock" is just the project name —
+> rename the repo and the `airlock-*` image prefix to whatever you like.
 
 ---
 
@@ -27,10 +28,10 @@ home" is a hard requirement.
 │   ├── serve.py            # tiny offline HTTP inference server (stdlib only)
 │   ├── requirements.txt
 │   └── README.md           # per-model build / run / pull / security docs
-├── docker-images/          # docs & catalog for the pre-built Docker Hub images
+├── docker-images/          # docs & catalog for the pre-built ghcr.io images
 │   └── README.md
 ├── .github/workflows/
-│   └── docker-build.yml    # CI/CD: build every model, tag, and push to Docker Hub
+│   └── docker-build.yml    # CI/CD: build every model, tag, and push to ghcr.io
 ├── CONTRIBUTING.md         # how to add a new model or improve an existing one
 ├── LICENSE
 └── README.md               # you are here
@@ -45,7 +46,7 @@ one is just adding a folder + one line in the CI matrix (see
 15 models out of the box. Gated models need a HuggingFace token; everything else
 builds with zero credentials.
 
-| # | Model | Directory | Default weights | Gated? | Docker Hub image |
+| # | Model | Directory | Default weights | Gated? | Image (`ghcr.io/<OWNER>/…`) |
 |---|-------|-----------|-----------------|:------:|------------------|
 | 1 | GPT-2 | [`/gpt2`](gpt2/README.md) | `gpt2` | — | `airlock-gpt2` |
 | 2 | Llama | [`/llama`](llama/README.md) | `TinyLlama/TinyLlama-1.1B-Chat-v1.0` | — | `airlock-llama` |
@@ -146,30 +147,36 @@ These two goals are in tension, and the per-model READMEs are explicit about it:
 ## ⚙️ CI/CD
 
 GitHub Actions ([`.github/workflows/docker-build.yml`](.github/workflows/docker-build.yml))
-builds **every** model image and pushes them to Docker Hub:
+builds **every** model image and pushes them to the GitHub Container Registry
+(`ghcr.io`):
 
 - **Triggers:** every push to `main`, every pull request (build-only, no push),
   a **daily schedule** (`03:00 UTC`), and manual `workflow_dispatch`.
 - **Matrix build:** all 15 models build in parallel (`fail-fast: false`, so a
   gated model missing its token won't sink the rest).
 - **Tags:** each image is pushed as `:latest`, `:YYYYMMDD`, and `:<git-sha>`.
-- **Credentials:** Docker Hub login uses the `DOCKERHUB_USERNAME` /
-  `DOCKERHUB_TOKEN` repository **secrets**; the optional `HF_TOKEN` secret
-  unlocks gated models.
+- **Credentials:** publishing uses the built-in `GITHUB_TOKEN` — **no personal
+  registry secrets required**. The workflow just needs `packages: write`
+  permission (already set). The optional `HF_TOKEN` secret unlocks gated models.
 
 The CI status badge at the top of this README reflects the latest run (replace
 `<OWNER>/<REPO>`).
 
-### Required GitHub secrets
+### GitHub secrets
+
+Publishing to `ghcr.io` uses the built-in `GITHUB_TOKEN`, so **no Docker
+registry secrets are needed**. The only (optional) secret is:
 
 | Secret | Required | Purpose |
 |--------|----------|---------|
-| `DOCKERHUB_USERNAME` | ✅ | Docker Hub account to push under |
-| `DOCKERHUB_TOKEN` | ✅ | Docker Hub **access token** (Account → Security) |
 | `HF_TOKEN` | optional | HuggingFace token for gated models (Mistral, Gemma, StableLM, official Llama) |
 
-Set them under **Settings → Secrets and variables → Actions → New repository
+Set it under **Settings → Secrets and variables → Actions → New repository
 secret**.
+
+> ℹ️ New ghcr.io packages are **private** by default. After the first push, set a
+> package to **Public** (repo → Packages → the image → Package settings) if you
+> want it pullable without authentication.
 
 ## 🤝 Contributing
 

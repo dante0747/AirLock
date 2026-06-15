@@ -45,11 +45,11 @@ curl -s localhost:8000/generate \
 
 > 💡 This is a base completion model — it continues your text rather than following instructions.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-bloom:latest
-docker run -d --name bloom --network none <DOCKERHUB_USERNAME>/airlock-bloom:latest
+docker pull ghcr.io/<OWNER>/airlock-bloom:latest
+docker run -d --name bloom --network none ghcr.io/<OWNER>/airlock-bloom:latest
 ```
 
 ## Security — how internet access is blocked & why

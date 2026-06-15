@@ -60,11 +60,11 @@ curl -s localhost:8000/generate \
 
 > 💡 This is a base completion model — it continues your text rather than following instructions.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-stablelm:latest
-docker run -d --name stablelm --network none <DOCKERHUB_USERNAME>/airlock-stablelm:latest
+docker pull ghcr.io/<OWNER>/airlock-stablelm:latest
+docker run -d --name stablelm --network none ghcr.io/<OWNER>/airlock-stablelm:latest
 ```
 
 > Note: gated weights may not be redistributable. Pre-built Hub images use an open fallback or require you to build locally with your token.

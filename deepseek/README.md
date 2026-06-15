@@ -45,11 +45,11 @@ curl -s localhost:8000/generate \
 
 > 💡 This is a code model — prompt it with a comment or function signature.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-deepseek:latest
-docker run -d --name deepseek --network none <DOCKERHUB_USERNAME>/airlock-deepseek:latest
+docker pull ghcr.io/<OWNER>/airlock-deepseek:latest
+docker run -d --name deepseek --network none ghcr.io/<OWNER>/airlock-deepseek:latest
 ```
 
 ## Security — how internet access is blocked & why

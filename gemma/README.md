@@ -60,11 +60,11 @@ curl -s localhost:8000/generate \
 
 > 💡 This is an instruction-tuned model — wrap prompts in its chat format (see the model card) for best results.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-gemma:latest
-docker run -d --name gemma --network none <DOCKERHUB_USERNAME>/airlock-gemma:latest
+docker pull ghcr.io/<OWNER>/airlock-gemma:latest
+docker run -d --name gemma --network none ghcr.io/<OWNER>/airlock-gemma:latest
 ```
 
 > Note: gated weights may not be redistributable. Pre-built Hub images use an open fallback or require you to build locally with your token.

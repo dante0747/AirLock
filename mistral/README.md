@@ -65,11 +65,11 @@ curl -s localhost:8000/generate \
 
 > 💡 Mistral-Instruct expects the `[INST] ... [/INST]` prompt format shown above.
 
-## 4. Pull the pre-built image from Docker Hub
+## 4. Pull the pre-built image from GitHub Container Registry (ghcr.io)
 
 ```bash
-docker pull <DOCKERHUB_USERNAME>/airlock-mistral:latest
-docker run -d --name mistral --network none <DOCKERHUB_USERNAME>/airlock-mistral:latest
+docker pull ghcr.io/<OWNER>/airlock-mistral:latest
+docker run -d --name mistral --network none ghcr.io/<OWNER>/airlock-mistral:latest
 ```
 
 > Note: Mistral's license may restrict redistribution of weights. If you publish
