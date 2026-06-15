@@ -1,16 +1,20 @@
 name: Build & Push LLM Images
 
 # -----------------------------------------------------------------------------
-# Builds every model's Dockerfile and pushes the resulting images to Docker Hub.
+# Builds every model's Dockerfile and pushes the resulting images to the GitHub
+# Container Registry (ghcr.io).
 #   * push / workflow_dispatch / schedule -> build AND push
 #   * pull_request                        -> build ONLY (validates the build,
 #                                            never pushes, safe for forks)
 #
-# Required repository secrets (Settings -> Secrets and variables -> Actions):
-#   DOCKERHUB_USERNAME  your Docker Hub username
-#   DOCKERHUB_TOKEN     a Docker Hub access token (not your password)
-#   HF_TOKEN            (optional) HuggingFace token for gated models (Mistral,
-#                       official Llama). Leave empty for the open defaults.
+# Auth: uses the built-in GITHUB_TOKEN -- no personal credentials required.
+# Images are published under the repo owner: ghcr.io/<owner>/airlock-<model>.
+# (After the first push, set the package visibility to Public if you want it
+#  pullable without auth: repo -> Packages -> the image -> Package settings.)
+#
+# Optional repository secret (Settings -> Secrets and variables -> Actions):
+#   HF_TOKEN  HuggingFace token for gated models (Mistral, official Llama).
+#             Leave unset for the open defaults.
 # -----------------------------------------------------------------------------
 
 on:
@@ -24,6 +28,7 @@ on:
 
 permissions:
   contents: read
+  packages: write # required to push images to ghcr.io
 
 concurrency:
   group: docker-build-${{ github.ref }}
@@ -68,16 +73,20 @@ jobs:
       - name: Compute image metadata
         id: meta
         run: |
-          echo "image=${{ secrets.DOCKERHUB_USERNAME }}/airlock-${{ matrix.model }}" >> "$GITHUB_OUTPUT"
+          # ghcr.io requires the image path to be lowercase; the owner login
+          # may contain uppercase characters, so normalise it here.
+          owner="${{ github.repository_owner }}"
+          echo "image=ghcr.io/${owner,,}/airlock-${{ matrix.model }}" >> "$GITHUB_OUTPUT"
           echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
 
       # Only log in (and therefore only push) on non-PR events. PRs just build.
-      - name: Log in to Docker Hub
+      - name: Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
