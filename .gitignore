@@ -1,0 +1,23 @@
+# Local model caches / weights (these are baked into images, never committed)
+models/
+*.safetensors
+*.bin
+*.gguf
+*.pt
+
+# Secrets — never commit tokens
+.hf_token
+*.token
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
