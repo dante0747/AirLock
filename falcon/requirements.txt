@@ -1,9 +1,14 @@
 # CPU-only PyTorch wheels keep the image small. Drop the extra index URL if you
-# want CUDA/GPU builds instead. transformers 4.44+ is required for newer model
-# families (Gemma 2, Qwen2.5, etc.).
+# want CUDA/GPU builds instead.
+#
+# transformers/tokenizers must be new enough to parse Falcon3's tokenizer.json.
+# The older tokenizers 0.19.x (shipped with transformers 4.44.2) fails with
+# "data did not match any variant of untagged enum ModelWrapper" because that
+# serialization format post-dates it. tokenizers 0.21.x handles it.
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.3.1
-transformers==4.44.2
+transformers==4.48.3
+tokenizers==0.21.0
 accelerate==0.33.0
 safetensors==0.4.4
 sentencepiece==0.2.0
