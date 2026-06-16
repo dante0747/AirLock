@@ -34,6 +34,8 @@ path to be lowercase).
 | DeepSeek Coder | `airlock-deepseek` | — | Code-specialized |
 | SmolLM2 | `airlock-smollm` | — | Apache-2.0, tiny |
 | Zephyr | `airlock-zephyr` | — | MIT; ~16 GB image |
+| OLMo 2 | `airlock-olmo` | — | Apache-2.0; fully open (weights + training data) |
+| GLM-Edge | `airlock-glm` | — | GLM-4 license; Z.ai on-device model |
 
 All images share the same tags: `latest`, `YYYYMMDD`, and `<git-sha>`.
 

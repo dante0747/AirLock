@@ -2,7 +2,7 @@
 
 [![Build & Push LLM Images](https://github.com/<OWNER>/<REPO>/actions/workflows/docker-build.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/docker-build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Models](https://img.shields.io/badge/models-15-brightgreen.svg)](#-available-models)
+[![Models](https://img.shields.io/badge/models-17-brightgreen.svg)](#-available-models)
 
 **Airlock** is a template repository for hosting **one Dockerfile per well-known
 local LLM**, where every model runs in a **fully network-isolated** (air-gapped)
@@ -43,7 +43,7 @@ one is just adding a folder + one line in the CI matrix (see
 
 ## 🧠 Available models
 
-15 models out of the box. Gated models need a HuggingFace token; everything else
+17 models out of the box. Gated models need a HuggingFace token; everything else
 builds with zero credentials.
 
 | # | Model | Directory | Default weights | Gated? | Image (`ghcr.io/<OWNER>/…`) |
@@ -63,6 +63,8 @@ builds with zero credentials.
 | 13 | DeepSeek Coder | [`/deepseek`](deepseek/README.md) | `deepseek-ai/deepseek-coder-1.3b-instruct` | — | `airlock-deepseek` |
 | 14 | SmolLM2 | [`/smollm`](smollm/README.md) | `HuggingFaceTB/SmolLM2-360M-Instruct` | — | `airlock-smollm` |
 | 15 | Zephyr | [`/zephyr`](zephyr/README.md) | `HuggingFaceH4/zephyr-7b-beta` | — | `airlock-zephyr` |
+| 16 | OLMo 2 | [`/olmo`](olmo/README.md) | `allenai/OLMo-2-0425-1B-Instruct` | — | `airlock-olmo` |
+| 17 | GLM-Edge | [`/glm`](glm/README.md) | `zai-org/glm-edge-1.5b-chat` | — | `airlock-glm` |
 
 > Gated directories default to a gated model, so their CI build needs an
 > `HF_TOKEN` secret (the rest stay green without one). You can always point any
@@ -152,7 +154,7 @@ builds **every** model image and pushes them to the GitHub Container Registry
 
 - **Triggers:** every push to `main`, every pull request (build-only, no push),
   a **daily schedule** (`03:00 UTC`), and manual `workflow_dispatch`.
-- **Matrix build:** all 15 models build in parallel (`fail-fast: false`, so a
+- **Matrix build:** all 17 models build in parallel (`fail-fast: false`, so a
   gated model missing its token won't sink the rest).
 - **Tags:** each image is pushed as `:latest`, `:YYYYMMDD`, and `:<git-sha>`.
 - **Credentials:** publishing uses the built-in `GITHUB_TOKEN` — **no personal
