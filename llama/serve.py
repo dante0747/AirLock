@@ -27,7 +27,7 @@ PORT = int(os.environ.get("PORT", "8000"))
 
 print(f"[serve] Loading '{MODEL_ID}' (offline) ...", flush=True)
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, cache_dir=CACHE_DIR)
-model = AutoModelForCausalLM.from_pretrained(MODEL_ID, cache_dir=CACHE_DIR)
+model = AutoModelForCausalLM.from_pretrained(MODEL_ID, cache_dir=CACHE_DIR, low_cpu_mem_usage=True)
 model.eval()
 
 
