@@ -4,12 +4,15 @@
 # transformers/tokenizers must be new enough to parse modern tokenizer.json
 # formats (Falcon3, Qwen2.5, Gemma 2, SmolLM2, etc.). The older tokenizers
 # 0.19.x (shipped with transformers 4.44.2) fails with "data did not match any
-# variant of untagged enum ModelWrapper"; tokenizers 0.21.x handles them.
+# variant of untagged enum ModelWrapper"; tokenizers 0.22.x handles them.
 # OLMo 2 in particular needs transformers >= 4.48 for the `olmo2` architecture.
+#
+# tokenizers must stay within transformers 5.0.0rc3's required range
+# (>=0.22.0,<=0.23.0); 0.21.0 conflicts and breaks `pip install`.
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.12.0+cpu
 transformers==5.0.0rc3
-tokenizers==0.21.0
+tokenizers==0.22.1
 accelerate==0.33.0
 safetensors==0.4.4
 sentencepiece==0.2.1
