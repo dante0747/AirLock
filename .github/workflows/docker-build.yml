@@ -81,9 +81,16 @@ jobs:
           echo "image=ghcr.io/${owner,,}/airlock-${{ matrix.model }}" >> "$GITHUB_OUTPUT"
           echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
 
-      # Only log in (and therefore only push) on non-PR events. PRs just build.
+      # Log in for pushes/schedules/dispatch AND for same-repo PRs, so that PR
+      # builds can READ the registry cache and skip the ~15 GB re-download. Fork
+      # PRs are deliberately excluded: their token is untrusted, so they simply
+      # miss the cache and build from scratch. Pushing the image and writing the
+      # cache are gated separately below (`push` and `cache-to`), so no PR -- not
+      # even a same-repo one -- ever publishes anything.
       - name: Log in to GitHub Container Registry
-        if: github.event_name != 'pull_request'
+        if: >-
+          github.event_name != 'pull_request' ||
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -105,6 +112,18 @@ jobs:
           # used (the secret mount is required=false in those Dockerfiles).
           secrets: |
             hf_token=${{ secrets.HF_TOKEN }}
-          # Speed up rebuilds with a per-model GitHub Actions cache.
-          cache-from: type=gha,scope=${{ matrix.model }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.model }}
+          # Speed up rebuilds with a per-model REGISTRY cache stored alongside the
+          # image as a ":buildcache" tag in ghcr.io. We use the registry (not
+          # type=gha) on purpose: the GitHub Actions cache is capped at 10 GB per
+          # repo, so the ~15 GB weight layer of the 7B models (mistral, zephyr)
+          # never fits and is re-downloaded from HuggingFace every run. The
+          # registry has no such cap, so the `RUN python download_model.py` layer
+          # is reused as long as requirements.txt, download_model.py and MODEL_ID
+          # are unchanged -- no 15 GB re-pull.
+          #
+          # cache-from runs on every event (it is a no-op miss if the cache tag
+          # is unreadable, e.g. on fork PRs). cache-to only runs when we are
+          # logged in and pushing (non-PR events); on PRs it is an empty string,
+          # which build-push-action treats as "no cache export".
+          cache-from: type=registry,ref=${{ steps.meta.outputs.image }}:buildcache
+          cache-to: ${{ github.event_name != 'pull_request' && format('type=registry,ref={0}:buildcache,mode=max,image-manifest=true,oci-mediatypes=true', steps.meta.outputs.image) || '' }}
