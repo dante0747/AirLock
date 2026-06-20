@@ -8,7 +8,7 @@
 # OLMo 2 in particular needs transformers >= 4.48 for the `olmo2` architecture.
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.12.0+cpu
-transformers==4.48.3
+transformers==5.0.0rc3
 tokenizers==0.21.0
 accelerate==0.33.0
 safetensors==0.4.4
