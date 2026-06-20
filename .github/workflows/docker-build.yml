@@ -40,24 +40,27 @@ jobs:
     strategy:
       fail-fast: false # one model failing must not cancel the others
       matrix:
+        # Each entry is a family/variant path; the published image is named after
+        # the variant (leaf) directory -- see the "Compute image metadata" step.
         model:
-          - gpt2
-          - llama
-          - mistral
-          - gemma
-          - phi
-          - qwen
-          - falcon
-          - bloom
-          - pythia
-          - stablelm
-          - opt
-          - gptneo
-          - deepseek
-          - smollm
-          - zephyr
-          - olmo
-          - glm
+          - gpt2/gpt2
+          - llama/tinyllama
+          - mistral/mistral-7b
+          - gemma/gemma2
+          - gemma/gemma4
+          - phi/phi2
+          - qwen/qwen2.5
+          - falcon/falcon3
+          - bloom/bloom
+          - pythia/pythia
+          - stablelm/stablelm2
+          - opt/opt
+          - gptneo/gptneo
+          - deepseek/deepseek-coder
+          - smollm/smollm2
+          - zephyr/zephyr
+          - olmo/olmo2
+          - glm/glm-edge
 
     steps:
       - name: Checkout
@@ -76,9 +79,13 @@ jobs:
         id: meta
         run: |
           # ghcr.io requires the image path to be lowercase; the owner login
-          # may contain uppercase characters, so normalise it here.
+          # may contain uppercase characters, so normalise it here. matrix.model
+          # is a family/variant path (e.g. gemma/gemma2); the published image is
+          # named after the variant (leaf) directory -> airlock-gemma2.
           owner="${{ github.repository_owner }}"
-          echo "image=ghcr.io/${owner,,}/airlock-${{ matrix.model }}" >> "$GITHUB_OUTPUT"
+          model="${{ matrix.model }}"
+          leaf="${model##*/}"
+          echo "image=ghcr.io/${owner,,}/airlock-${leaf}" >> "$GITHUB_OUTPUT"
           echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
 
       # Log in for pushes/schedules/dispatch AND for same-repo PRs, so that PR

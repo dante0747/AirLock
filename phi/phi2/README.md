@@ -1,13 +1,13 @@
 <div align="center">
 
-# 🧬 GPT-Neo · offline
+# 🔬 Phi-2 · offline
 
-EleutherAI's open replication of the GPT-3 architecture, in a self-contained
-**network-isolated** container. Weights are baked into the image at build time;
-the container runs with **no internet access**.
+Microsoft's small-but-mighty Phi models, strong at reasoning and code, in a
+self-contained **network-isolated** container. Weights are baked into the image
+at build time; the container runs with **no internet access**.
 
 ![Weights](https://img.shields.io/badge/weights-open-2f9e44?style=flat-square)
-![Image](https://img.shields.io/badge/image-~4_GB-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Image](https://img.shields.io/badge/image-~6_GB-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![Runtime](https://img.shields.io/badge/runtime-air--gapped-862e9c?style=flat-square)
 ![Transformers](https://img.shields.io/badge/Hugging%20Face-Transformers-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
 
@@ -17,16 +17,16 @@ the container runs with **no internet access**.
 
 | | |
 |---|---|
-| 🆔 **Default model id** | `EleutherAI/gpt-neo-1.3B` |
+| 🆔 **Default model id** | `microsoft/phi-2` |
 | 📜 **License / gating** | MIT — open, no token required |
-| 💾 **Approx. image size** | ~4 GB (CPU build) |
+| 💾 **Approx. image size** | ~6 GB (CPU build) |
 | 🏗️ **Architecture** | Causal LM (`AutoModelForCausalLM`) |
 
 ## 🔨 1 · Build the image locally
 
 ```bash
 # from the repository root — no credentials required
-docker build -t airlock-gptneo ./gptneo
+docker build -t airlock-phi2 ./phi/phi2
 ```
 
 The build needs internet (to install dependencies and download the weights).
@@ -38,19 +38,19 @@ The build needs internet (to install dependencies and download the weights).
 *cannot* reach the internet. Interact with it via `docker exec`:
 
 ```bash
-docker run -d --name gptneo --network none airlock-gptneo
-docker exec gptneo python -c "import serve; print(serve.generate('In the future, robots will', 60))"
+docker run -d --name phi --network none airlock-phi2
+docker exec phi python -c "import serve; print(serve.generate('Instruct: Write a haiku about the sea.\nOutput:', 60))"
 ```
 
 ## 🌐 3 · Run — internal API, still no internet
 
 ```bash
 docker network create --internal llm-net 2>/dev/null || true
-docker run -d --name gptneo --network llm-net -p 8000:8000 airlock-gptneo
+docker run -d --name phi --network llm-net -p 8000:8000 airlock-phi2
 
 curl -s localhost:8000/generate \
   -H 'Content-Type: application/json' \
-  -d '{"prompt": "In the future, robots will", "max_new_tokens": 60}'
+  -d '{"prompt": "Instruct: Write a haiku about the sea.\nOutput:", "max_new_tokens": 60}'
 ```
 
 > [!IMPORTANT]
@@ -58,19 +58,19 @@ curl -s localhost:8000/generate \
 > are no ports to publish — use the `docker exec` method above.
 
 > [!TIP]
-> This is a base completion model — it continues your text rather than following
-> instructions.
+> This is an instruction-tuned model — wrap prompts in its chat format (see the
+> model card) for best results.
 
 ## ⬇️ 4 · Pull the pre-built image from ghcr.io
 
 ```bash
-docker pull ghcr.io/dante0747/airlock-gptneo:latest
-docker run -d --name gptneo --network none ghcr.io/dante0747/airlock-gptneo:latest
+docker pull ghcr.io/dante0747/airlock-phi2:latest
+docker run -d --name phi --network none ghcr.io/dante0747/airlock-phi2:latest
 ```
 
 ## 🔐 Security — how internet access is blocked & why
 
-See the [root README security section](../README.md#-security-model) for the
+See the [root README security section](../../README.md#-security-model) for the
 full rationale. Three independent layers keep this model offline:
 
 1. **Weights baked at build time** → nothing to download at runtime.

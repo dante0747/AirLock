@@ -26,11 +26,13 @@ existing one**. Both are quick — every model follows the same convention.
 
 ## ➕ Adding a new model
 
-1. **Create a directory** named after the model (lowercase, no spaces), e.g.
-   `phi/`, `qwen/`, `gemma/`.
-2. **Copy an existing model as a starting point.** The `gpt2/` directory is the
-   simplest reference; `llama/` shows the gated-weights (BuildKit secret)
-   pattern. Each directory contains:
+1. **Create a `family/variant` directory** (lowercase, no spaces). A new variant
+   of an existing family nests under it (e.g. `gemma/gemma4`); a brand-new family
+   gets its own folder with the variant inside (e.g. `qwen/qwen2.5`). The
+   published image is named after the **variant** (leaf) directory.
+2. **Copy an existing model as a starting point.** The `gpt2/gpt2/` directory is
+   the simplest reference; `mistral/mistral-7b/` shows the gated-weights
+   (BuildKit secret) pattern. Each variant directory contains:
    - `Dockerfile`
    - `download_model.py` — bakes weights in at build time (usually unchanged)
    - `serve.py` — tiny offline HTTP server (usually unchanged)
@@ -40,8 +42,9 @@ existing one**. Both are quick — every model follows the same convention.
 4. **Write the model README** following the structure used by the others:
    overview table, build locally, run (air-gapped + internal-network), pull from
    ghcr.io, and a security section.
-5. **Register it in CI.** Add the directory name to the `matrix.model` list in
-   [`.github/workflows/docker-build.yml`](.github/workflows/docker-build.yml).
+5. **Register it in CI.** Add the **`family/variant` path** to the `matrix.model`
+   list in [`.github/workflows/docker-build.yml`](.github/workflows/docker-build.yml)
+   (the workflow auto-names the image `airlock-<variant>`).
 6. **Update the root README** "Available models" table.
 
 ### ✅ Dockerfile checklist
@@ -68,21 +71,21 @@ Every Dockerfile **must**:
 
 ```bash
 # Build (network used here, at build time only)
-docker build -t airlock-<model> ./<model>
+docker build -t airlock-<variant> ./<family>/<variant>
 
 # Verify it runs with NO network
-docker run -d --name <model> --network none airlock-<model>
-docker exec <model> python -c "import serve; print(serve.generate('Hello', 16))"
+docker run -d --name <variant> --network none airlock-<variant>
+docker exec <variant> python -c "import serve; print(serve.generate('Hello', 16))"
 
 # Prove isolation: this MUST fail (no network interface)
-docker exec <model> python -c "import socket; socket.create_connection(('huggingface.co', 443), 5)" \
+docker exec <variant> python -c "import socket; socket.create_connection(('huggingface.co', 443), 5)" \
   && echo 'LEAK: had network!' || echo 'OK: no network'
 ```
 
 ## 📬 Pull request process
 
 1. Fork and create a feature branch.
-2. Make your change; ensure `docker build ./<model>` succeeds locally.
+2. Make your change; ensure `docker build ./<family>/<variant>` succeeds locally.
 3. Open a PR. CI will **build** (but not push) your model on the PR.
 4. A maintainer reviews for the isolation guarantees above and merges.
 

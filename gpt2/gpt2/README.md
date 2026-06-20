@@ -31,10 +31,10 @@ at build time; the container runs with **no internet access**.
 
 ```bash
 # from the repository root
-docker build -t airlock-gpt2 ./gpt2
+docker build -t airlock-gpt2 ./gpt2/gpt2
 
 # (optional) pick a different GPT-2 variant
-docker build --build-arg MODEL_ID=distilgpt2 -t airlock-gpt2 ./gpt2
+docker build --build-arg MODEL_ID=distilgpt2 -t airlock-gpt2 ./gpt2/gpt2
 ```
 
 The build needs internet (to install dependencies and download the weights).
@@ -80,11 +80,11 @@ docker run -d --name gpt2 --network none ghcr.io/dante0747/airlock-gpt2:latest
 ```
 
 Available tags: `latest`, `YYYYMMDD` (daily), and `<git-sha>`. See
-[`/docker-images`](../docker-images/README.md) for the full catalog.
+[`/docker-images`](../../docker-images/README.md) for the full catalog.
 
 ## 🔐 Security — how internet access is blocked & why
 
-See the [root README security section](../README.md#-security-model) for the
+See the [root README security section](../../README.md#-security-model) for the
 full rationale. In short, three independent layers keep this model offline:
 
 1. **Weights baked at build time** → nothing to download at runtime.

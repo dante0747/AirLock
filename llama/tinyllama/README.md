@@ -31,7 +31,7 @@ the container runs with **no internet access**.
 
 ```bash
 # from the repository root -- open default, no token needed
-docker build -t airlock-llama ./llama
+docker build -t airlock-tinyllama ./llama/tinyllama
 ```
 
 ### 🔑 Using gated Meta weights
@@ -47,7 +47,7 @@ printf '%s' 'hf_xxx_your_token' > "$HOME/.hf_token"
 DOCKER_BUILDKIT=1 docker build \
   --build-arg MODEL_ID=meta-llama/Llama-2-7b-chat-hf \
   --secret id=hf_token,src="$HOME/.hf_token" \
-  -t airlock-llama ./llama
+  -t airlock-tinyllama ./llama/tinyllama
 ```
 
 > [!WARNING]
@@ -59,7 +59,7 @@ The build needs internet (to install dependencies and download the weights).
 ## 🚀 2 · Run — fully air-gapped (recommended)
 
 ```bash
-docker run -d --name llama --network none airlock-llama
+docker run -d --name llama --network none airlock-tinyllama
 docker exec llama python -c "import serve; print(serve.generate('Explain gravity simply.', 80))"
 ```
 
@@ -67,7 +67,7 @@ docker exec llama python -c "import serve; print(serve.generate('Explain gravity
 
 ```bash
 docker network create --internal llm-net
-docker run -d --name llama --network llm-net -p 8000:8000 airlock-llama
+docker run -d --name llama --network llm-net -p 8000:8000 airlock-tinyllama
 
 curl -s localhost:8000/generate \
   -H 'Content-Type: application/json' \
@@ -81,8 +81,8 @@ curl -s localhost:8000/generate \
 ## ⬇️ 4 · Pull the pre-built image from ghcr.io
 
 ```bash
-docker pull ghcr.io/dante0747/airlock-llama:latest
-docker run -d --name llama --network none ghcr.io/dante0747/airlock-llama:latest
+docker pull ghcr.io/dante0747/airlock-tinyllama:latest
+docker run -d --name llama --network none ghcr.io/dante0747/airlock-tinyllama:latest
 ```
 
 > [!CAUTION]
@@ -91,7 +91,7 @@ docker run -d --name llama --network none ghcr.io/dante0747/airlock-llama:latest
 
 ## 🔐 Security — how internet access is blocked & why
 
-See the [root README security section](../README.md#-security-model) for the
+See the [root README security section](../../README.md#-security-model) for the
 full rationale. Three independent layers keep this model offline:
 
 1. **Weights baked at build time** → nothing to download at runtime.

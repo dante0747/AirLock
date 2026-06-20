@@ -1,0 +1,13 @@
+# Gemma 4 is served from a 4-bit GGUF via llama.cpp (NOT transformers), so the
+# image stays ~8 GB instead of ~28 GB of full-precision safetensors.
+#
+# Prebuilt CPU llama.cpp wheels keep the slim image compiler-free: the abetlen
+# index ships manylinux2014 x86_64 wheels, and --prefer-binary stops pip from
+# falling back to the PyPI sdist (which would need cmake/gcc to build from
+# source). 0.3.30 is the newest version on that wheel index and bundles a
+# llama.cpp new enough to understand the Gemma 4 architecture.
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+--prefer-binary
+llama-cpp-python==0.3.30
+# Only needed at BUILD time, to pull the single GGUF file into the image.
+huggingface_hub==0.27.0

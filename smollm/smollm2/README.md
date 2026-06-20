@@ -26,7 +26,7 @@ at build time; the container runs with **no internet access**.
 
 ```bash
 # from the repository root — no credentials required
-docker build -t airlock-smollm ./smollm
+docker build -t airlock-smollm2 ./smollm/smollm2
 ```
 
 The build needs internet (to install dependencies and download the weights).
@@ -38,7 +38,7 @@ The build needs internet (to install dependencies and download the weights).
 *cannot* reach the internet. Interact with it via `docker exec`:
 
 ```bash
-docker run -d --name smollm --network none airlock-smollm
+docker run -d --name smollm --network none airlock-smollm2
 docker exec smollm python -c "import serve; print(serve.generate('Tell me a fun fact about space.', 60))"
 ```
 
@@ -46,7 +46,7 @@ docker exec smollm python -c "import serve; print(serve.generate('Tell me a fun 
 
 ```bash
 docker network create --internal llm-net 2>/dev/null || true
-docker run -d --name smollm --network llm-net -p 8000:8000 airlock-smollm
+docker run -d --name smollm --network llm-net -p 8000:8000 airlock-smollm2
 
 curl -s localhost:8000/generate \
   -H 'Content-Type: application/json' \
@@ -64,13 +64,13 @@ curl -s localhost:8000/generate \
 ## ⬇️ 4 · Pull the pre-built image from ghcr.io
 
 ```bash
-docker pull ghcr.io/dante0747/airlock-smollm:latest
-docker run -d --name smollm --network none ghcr.io/dante0747/airlock-smollm:latest
+docker pull ghcr.io/dante0747/airlock-smollm2:latest
+docker run -d --name smollm --network none ghcr.io/dante0747/airlock-smollm2:latest
 ```
 
 ## 🔐 Security — how internet access is blocked & why
 
-See the [root README security section](../README.md#-security-model) for the
+See the [root README security section](../../README.md#-security-model) for the
 full rationale. Three independent layers keep this model offline:
 
 1. **Weights baked at build time** → nothing to download at runtime.

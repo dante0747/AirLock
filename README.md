@@ -8,7 +8,7 @@
 
 [![Build & Push LLM Images](https://github.com/dante0747/AirLock/actions/workflows/docker-build.yml/badge.svg)](https://github.com/dante0747/AirLock/actions/workflows/docker-build.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
-[![Models](https://img.shields.io/badge/models-17-2f9e44?style=flat-square)](#-available-models)
+[![Models](https://img.shields.io/badge/models-18-2f9e44?style=flat-square)](#-available-models)
 [![Runtime](https://img.shields.io/badge/runtime-air--gapped-862e9c?style=flat-square)](#-security-model)
 [![Registry](https://img.shields.io/badge/registry-ghcr.io-2496ED?style=flat-square&logo=docker&logoColor=white)](#%EF%B8%8F-cicd)
 
@@ -40,7 +40,7 @@ environments, or anywhere *"the model must not phone home"* is a hard requiremen
 |---|---|
 | 🔌 **Truly offline** | Three independent layers (baked weights, library offline mode, kernel-level `--network none`) keep the model from ever reaching the internet. |
 | 📦 **Self-contained** | Weights ship *inside* the image. Pull once, run anywhere — no Hub access, no surprises at runtime. |
-| 🧩 **One folder per model** | Adding a model is just a directory + one line in the CI matrix. 17 models ready out of the box. |
+| 🧩 **One folder per variant** | Models are grouped `family/variant`; adding one is a directory + one line in the CI matrix. 18 models ready out of the box. |
 | 🔐 **Secrets-safe** | Gated-model tokens are passed as **BuildKit secrets**, never baked into a layer or `docker history`. |
 | 🤖 **Hands-off CI/CD** | GitHub Actions builds every model in parallel and publishes to `ghcr.io` with the built-in `GITHUB_TOKEN`. |
 
@@ -62,12 +62,13 @@ flowchart LR
 
 ```
 .
-├── <model>/                # one directory per model, named after the model
-│   ├── Dockerfile          # builds the offline image (see comments inside)
-│   ├── download_model.py   # bakes weights into the image at BUILD time
-│   ├── serve.py            # tiny offline HTTP inference server (stdlib only)
-│   ├── requirements.txt
-│   └── README.md           # per-model build / run / pull / security docs
+├── <family>/               # one directory per model family (e.g. gemma/)
+│   └── <variant>/          # one per variant (e.g. gemma2, gemma4)
+│       ├── Dockerfile          # builds the offline image (see comments inside)
+│       ├── download_model.py   # bakes weights into the image at BUILD time
+│       ├── serve.py            # tiny offline HTTP inference server (stdlib only)
+│       ├── requirements.txt
+│       └── README.md           # per-model build / run / pull / security docs
 ├── docker-images/          # docs & catalog for the pre-built ghcr.io images
 │   └── README.md
 ├── .github/workflows/
@@ -77,38 +78,40 @@ flowchart LR
 └── README.md               # you are here
 ```
 
-Each model lives in its **own directory named after the model**, so adding a new
-one is just adding a folder + one line in the CI matrix (see
-[CONTRIBUTING.md](CONTRIBUTING.md)).
+Each model lives in its own **`family/variant`** directory (e.g.
+`gemma/gemma2`), so adding a new one is just adding a folder + one line in the CI
+matrix — the published image is named after the **variant** (leaf) directory
+(`airlock-gemma2`). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 🧠 Available models
 
-**17 models out of the box.** Gated models need a HuggingFace token; everything
+**18 models out of the box.** Gated models need a HuggingFace token; everything
 else builds with zero credentials.
 
 | # | Model | Directory | Default weights | Gated? | Image (`ghcr.io/dante0747/…`) |
 |---|-------|-----------|-----------------|:------:|------------------|
-| 1 | 🤖 GPT-2 | [`/gpt2`](gpt2/README.md) | `gpt2` | — | `airlock-gpt2` |
-| 2 | 🦙 Llama | [`/llama`](llama/README.md) | `TinyLlama/TinyLlama-1.1B-Chat-v1.0` | — | `airlock-llama` |
-| 3 | 🌬️ Mistral | [`/mistral`](mistral/README.md) | `mistralai/Mistral-7B-Instruct-v0.2` | 🔑 | `airlock-mistral` |
-| 4 | 💎 Gemma 2 | [`/gemma`](gemma/README.md) | `google/gemma-2-2b-it` | 🔑 | `airlock-gemma` |
-| 5 | 🔬 Phi-2 | [`/phi`](phi/README.md) | `microsoft/phi-2` | — | `airlock-phi` |
-| 6 | 🌏 Qwen2.5 | [`/qwen`](qwen/README.md) | `Qwen/Qwen2.5-0.5B-Instruct` | — | `airlock-qwen` |
-| 7 | 🦅 Falcon3 | [`/falcon`](falcon/README.md) | `tiiuae/Falcon3-1B-Instruct` | — | `airlock-falcon` |
-| 8 | 🌸 BLOOM | [`/bloom`](bloom/README.md) | `bigscience/bloom-560m` | — | `airlock-bloom` |
-| 9 | 🔮 Pythia | [`/pythia`](pythia/README.md) | `EleutherAI/pythia-410m` | — | `airlock-pythia` |
-| 10 | ⚖️ StableLM 2 | [`/stablelm`](stablelm/README.md) | `stabilityai/stablelm-2-1_6b` | 🔑 | `airlock-stablelm` |
-| 11 | 📂 OPT | [`/opt`](opt/README.md) | `facebook/opt-1.3b` | — | `airlock-opt` |
-| 12 | 🧬 GPT-Neo | [`/gptneo`](gptneo/README.md) | `EleutherAI/gpt-neo-1.3B` | — | `airlock-gptneo` |
-| 13 | 💻 DeepSeek Coder | [`/deepseek`](deepseek/README.md) | `deepseek-ai/deepseek-coder-1.3b-instruct` | — | `airlock-deepseek` |
-| 14 | 🤏 SmolLM2 | [`/smollm`](smollm/README.md) | `HuggingFaceTB/SmolLM2-360M-Instruct` | — | `airlock-smollm` |
-| 15 | 🍃 Zephyr | [`/zephyr`](zephyr/README.md) | `HuggingFaceH4/zephyr-7b-beta` | — | `airlock-zephyr` |
-| 16 | 🔭 OLMo 2 | [`/olmo`](olmo/README.md) | `allenai/OLMo-2-0425-1B-Instruct` | — | `airlock-olmo` |
-| 17 | ⚡ GLM-Edge | [`/glm`](glm/README.md) | `zai-org/glm-edge-1.5b-chat` | — | `airlock-glm` |
+| 1 | 🤖 GPT-2 | [`/gpt2/gpt2`](gpt2/gpt2/README.md) | `gpt2` | — | `airlock-gpt2` |
+| 2 | 🦙 Llama | [`/llama/tinyllama`](llama/tinyllama/README.md) | `TinyLlama/TinyLlama-1.1B-Chat-v1.0` | — | `airlock-tinyllama` |
+| 3 | 🌬️ Mistral | [`/mistral/mistral-7b`](mistral/mistral-7b/README.md) | `mistralai/Mistral-7B-Instruct-v0.2` | 🔑 | `airlock-mistral-7b` |
+| 4 | 💎 Gemma 2 | [`/gemma/gemma2`](gemma/gemma2/README.md) | `google/gemma-2-2b-it` | 🔑 | `airlock-gemma2` |
+| 5 | 💠 Gemma 4 | [`/gemma/gemma4`](gemma/gemma4/README.md) | `unsloth/gemma-4-12b-it-GGUF` (Q4_K_M) | — | `airlock-gemma4` |
+| 6 | 🔬 Phi-2 | [`/phi/phi2`](phi/phi2/README.md) | `microsoft/phi-2` | — | `airlock-phi2` |
+| 7 | 🌏 Qwen2.5 | [`/qwen/qwen2.5`](qwen/qwen2.5/README.md) | `Qwen/Qwen2.5-0.5B-Instruct` | — | `airlock-qwen2.5` |
+| 8 | 🦅 Falcon3 | [`/falcon/falcon3`](falcon/falcon3/README.md) | `tiiuae/Falcon3-1B-Instruct` | — | `airlock-falcon3` |
+| 9 | 🌸 BLOOM | [`/bloom/bloom`](bloom/bloom/README.md) | `bigscience/bloom-560m` | — | `airlock-bloom` |
+| 10 | 🔮 Pythia | [`/pythia/pythia`](pythia/pythia/README.md) | `EleutherAI/pythia-410m` | — | `airlock-pythia` |
+| 11 | ⚖️ StableLM 2 | [`/stablelm/stablelm2`](stablelm/stablelm2/README.md) | `stabilityai/stablelm-2-1_6b` | 🔑 | `airlock-stablelm2` |
+| 12 | 📂 OPT | [`/opt/opt`](opt/opt/README.md) | `facebook/opt-1.3b` | — | `airlock-opt` |
+| 13 | 🧬 GPT-Neo | [`/gptneo/gptneo`](gptneo/gptneo/README.md) | `EleutherAI/gpt-neo-1.3B` | — | `airlock-gptneo` |
+| 14 | 💻 DeepSeek Coder | [`/deepseek/deepseek-coder`](deepseek/deepseek-coder/README.md) | `deepseek-ai/deepseek-coder-1.3b-instruct` | — | `airlock-deepseek-coder` |
+| 15 | 🤏 SmolLM2 | [`/smollm/smollm2`](smollm/smollm2/README.md) | `HuggingFaceTB/SmolLM2-360M-Instruct` | — | `airlock-smollm2` |
+| 16 | 🍃 Zephyr | [`/zephyr/zephyr`](zephyr/zephyr/README.md) | `HuggingFaceH4/zephyr-7b-beta` | — | `airlock-zephyr` |
+| 17 | 🔭 OLMo 2 | [`/olmo/olmo2`](olmo/olmo2/README.md) | `allenai/OLMo-2-0425-1B-Instruct` | — | `airlock-olmo2` |
+| 18 | ⚡ GLM-Edge | [`/glm/glm-edge`](glm/glm-edge/README.md) | `zai-org/glm-edge-1.5b-chat` | — | `airlock-glm-edge` |
 
 Every image is published at **`ghcr.io/dante0747/airlock-<model>`** — see
 [`/docker-images`](docker-images/README.md#-full-image-paths) for the full,
-copy-paste-ready list of all 17 paths.
+copy-paste-ready list of all 18 paths.
 
 > [!NOTE]
 > 🔑 = gated. Gated directories default to a gated model, so their CI build needs
@@ -119,7 +122,7 @@ copy-paste-ready list of all 17 paths.
 
 ```bash
 # Build the reference model (open weights, no credentials required)
-docker build -t airlock-gpt2 ./gpt2
+docker build -t airlock-gpt2 ./gpt2/gpt2
 
 # Run it fully air-gapped — the container has NO network interface at all
 docker run -d --name gpt2 --network none airlock-gpt2
@@ -197,7 +200,7 @@ builds **every** model image and pushes them to the GitHub Container Registry
 
 - 🔁 **Triggers:** every push to `main`, every pull request (build-only, no
   push), a **daily schedule** (`03:00 UTC`), and manual `workflow_dispatch`.
-- 🧱 **Matrix build:** all 17 models build in parallel (`fail-fast: false`, so a
+- 🧱 **Matrix build:** all 18 models build in parallel (`fail-fast: false`, so a
   gated model missing its token won't sink the rest).
 - 🏷️ **Tags:** each image is pushed as `:latest`, `:YYYYMMDD`, and `:<git-sha>`.
 - 🔑 **Credentials:** publishing uses the built-in `GITHUB_TOKEN` — **no personal

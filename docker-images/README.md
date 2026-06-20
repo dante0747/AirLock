@@ -35,22 +35,23 @@ Every image is published under the repo owner as `ghcr.io/dante0747/<image>`.
 | Model | Image | Gated? | Notes |
 |-------|-------|:------:|-------|
 | 🤖 GPT-2 | `airlock-gpt2` | — | Open weights, builds with no credentials (reference model) |
-| 🦙 Llama | `airlock-llama` | — | Published image uses the open TinyLlama default |
-| 🌬️ Mistral | `airlock-mistral` | 🔑 | Gated weights — see licensing note below |
-| 💎 Gemma 2 | `airlock-gemma` | 🔑 | Needs `HF_TOKEN`; gated by Google |
-| 🔬 Phi-2 | `airlock-phi` | — | MIT licensed |
-| 🌏 Qwen2.5 | `airlock-qwen` | — | Apache-2.0 |
-| 🦅 Falcon3 | `airlock-falcon` | — | TII Falcon License |
+| 🦙 Llama | `airlock-tinyllama` | — | Published image uses the open TinyLlama default |
+| 🌬️ Mistral | `airlock-mistral-7b` | 🔑 | Gated weights — see licensing note below |
+| 💎 Gemma 2 | `airlock-gemma2` | 🔑 | Needs `HF_TOKEN`; gated by Google |
+| 💠 Gemma 4 | `airlock-gemma4` | — | Apache-2.0; 12B Q4_K_M GGUF via llama.cpp, ~8 GB image |
+| 🔬 Phi-2 | `airlock-phi2` | — | MIT licensed |
+| 🌏 Qwen2.5 | `airlock-qwen2.5` | — | Apache-2.0 |
+| 🦅 Falcon3 | `airlock-falcon3` | — | TII Falcon License |
 | 🌸 BLOOM | `airlock-bloom` | — | BigScience RAIL license |
 | 🔮 Pythia | `airlock-pythia` | — | Apache-2.0 |
-| ⚖️ StableLM 2 | `airlock-stablelm` | 🔑 | Needs `HF_TOKEN`; gated by Stability AI |
+| ⚖️ StableLM 2 | `airlock-stablelm2` | 🔑 | Needs `HF_TOKEN`; gated by Stability AI |
 | 📂 OPT | `airlock-opt` | — | Non-commercial license |
 | 🧬 GPT-Neo | `airlock-gptneo` | — | MIT licensed |
-| 💻 DeepSeek Coder | `airlock-deepseek` | — | Code-specialized |
-| 🤏 SmolLM2 | `airlock-smollm` | — | Apache-2.0, tiny |
+| 💻 DeepSeek Coder | `airlock-deepseek-coder` | — | Code-specialized |
+| 🤏 SmolLM2 | `airlock-smollm2` | — | Apache-2.0, tiny |
 | 🍃 Zephyr | `airlock-zephyr` | — | MIT; ~16 GB image |
-| 🔭 OLMo 2 | `airlock-olmo` | — | Apache-2.0; fully open (weights + training data) |
-| ⚡ GLM-Edge | `airlock-glm` | — | GLM-4 license; Z.ai on-device model |
+| 🔭 OLMo 2 | `airlock-olmo2` | — | Apache-2.0; fully open (weights + training data) |
+| ⚡ GLM-Edge | `airlock-glm-edge` | — | GLM-4 license; Z.ai on-device model |
 
 All images share the same tags: `latest`, `YYYYMMDD`, and `<git-sha>`.
 
@@ -61,22 +62,23 @@ Every image lives at `ghcr.io/dante0747/airlock-<model>`. The complete list
 
 ```text
 ghcr.io/dante0747/airlock-gpt2
-ghcr.io/dante0747/airlock-llama
-ghcr.io/dante0747/airlock-mistral
-ghcr.io/dante0747/airlock-gemma
-ghcr.io/dante0747/airlock-phi
-ghcr.io/dante0747/airlock-qwen
-ghcr.io/dante0747/airlock-falcon
+ghcr.io/dante0747/airlock-tinyllama
+ghcr.io/dante0747/airlock-mistral-7b
+ghcr.io/dante0747/airlock-gemma2
+ghcr.io/dante0747/airlock-gemma4
+ghcr.io/dante0747/airlock-phi2
+ghcr.io/dante0747/airlock-qwen2.5
+ghcr.io/dante0747/airlock-falcon3
 ghcr.io/dante0747/airlock-bloom
 ghcr.io/dante0747/airlock-pythia
-ghcr.io/dante0747/airlock-stablelm
+ghcr.io/dante0747/airlock-stablelm2
 ghcr.io/dante0747/airlock-opt
 ghcr.io/dante0747/airlock-gptneo
-ghcr.io/dante0747/airlock-deepseek
-ghcr.io/dante0747/airlock-smollm
+ghcr.io/dante0747/airlock-deepseek-coder
+ghcr.io/dante0747/airlock-smollm2
 ghcr.io/dante0747/airlock-zephyr
-ghcr.io/dante0747/airlock-olmo
-ghcr.io/dante0747/airlock-glm
+ghcr.io/dante0747/airlock-olmo2
+ghcr.io/dante0747/airlock-glm-edge
 ```
 
 > [!TIP]
@@ -126,8 +128,8 @@ docker pull ghcr.io/dante0747/airlock-gpt2:20260616
 Pre-built images bundle model weights, which carry their **own** licenses:
 
 - ✅ **Open** (GPT-2, TinyLlama, Phi-2, Qwen2.5, Falcon3, BLOOM, Pythia, OPT,
-  GPT-Neo, DeepSeek, SmolLM2, Zephyr) — generally safe to redistribute, but check
-  each model's specific terms (some, like OPT, are research/non-commercial).
+  GPT-Neo, DeepSeek, SmolLM2, Zephyr, Gemma 4) — generally safe to redistribute,
+  but check each model's specific terms (some, like OPT, are research/non-commercial).
 - 🔑 **Gated** (Mistral, Gemma, StableLM, official Meta Llama) — may **restrict
   redistribution**.
 

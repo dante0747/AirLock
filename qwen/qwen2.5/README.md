@@ -1,13 +1,13 @@
 <div align="center">
 
-# 💻 DeepSeek Coder · offline
+# 🌏 Qwen2.5 · offline
 
-DeepSeek's code-specialized model trained on 2T tokens, in a self-contained
-**network-isolated** container. Weights are baked into the image at build time;
-the container runs with **no internet access**.
+Alibaba's multilingual Qwen models with strong coding and math skills, in a
+self-contained **network-isolated** container. Weights are baked into the image
+at build time; the container runs with **no internet access**.
 
 ![Weights](https://img.shields.io/badge/weights-open-2f9e44?style=flat-square)
-![Image](https://img.shields.io/badge/image-~4_GB-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Image](https://img.shields.io/badge/image-~3_GB-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![Runtime](https://img.shields.io/badge/runtime-air--gapped-862e9c?style=flat-square)
 ![Transformers](https://img.shields.io/badge/Hugging%20Face-Transformers-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
 
@@ -17,16 +17,16 @@ the container runs with **no internet access**.
 
 | | |
 |---|---|
-| 🆔 **Default model id** | `deepseek-ai/deepseek-coder-1.3b-instruct` |
-| 📜 **License / gating** | DeepSeek License — open, no token required |
-| 💾 **Approx. image size** | ~4 GB (CPU build) |
+| 🆔 **Default model id** | `Qwen/Qwen2.5-0.5B-Instruct` |
+| 📜 **License / gating** | Apache-2.0 — open, no token required |
+| 💾 **Approx. image size** | ~3 GB (CPU build) |
 | 🏗️ **Architecture** | Causal LM (`AutoModelForCausalLM`) |
 
 ## 🔨 1 · Build the image locally
 
 ```bash
 # from the repository root — no credentials required
-docker build -t airlock-deepseek ./deepseek
+docker build -t airlock-qwen2.5 ./qwen/qwen2.5
 ```
 
 The build needs internet (to install dependencies and download the weights).
@@ -38,19 +38,19 @@ The build needs internet (to install dependencies and download the weights).
 *cannot* reach the internet. Interact with it via `docker exec`:
 
 ```bash
-docker run -d --name deepseek --network none airlock-deepseek
-docker exec deepseek python -c "import serve; print(serve.generate('# Write a Python function to reverse a string\n', 60))"
+docker run -d --name qwen --network none airlock-qwen2.5
+docker exec qwen python -c "import serve; print(serve.generate('Give me three uses for a paperclip.', 60))"
 ```
 
 ## 🌐 3 · Run — internal API, still no internet
 
 ```bash
 docker network create --internal llm-net 2>/dev/null || true
-docker run -d --name deepseek --network llm-net -p 8000:8000 airlock-deepseek
+docker run -d --name qwen --network llm-net -p 8000:8000 airlock-qwen2.5
 
 curl -s localhost:8000/generate \
   -H 'Content-Type: application/json' \
-  -d '{"prompt": "# Write a Python function to reverse a string\n", "max_new_tokens": 60}'
+  -d '{"prompt": "Give me three uses for a paperclip.", "max_new_tokens": 60}'
 ```
 
 > [!IMPORTANT]
@@ -58,18 +58,19 @@ curl -s localhost:8000/generate \
 > are no ports to publish — use the `docker exec` method above.
 
 > [!TIP]
-> This is a code model — prompt it with a comment or function signature.
+> This is a chat model — wrap prompts in its chat template (see the model card)
+> for best results.
 
 ## ⬇️ 4 · Pull the pre-built image from ghcr.io
 
 ```bash
-docker pull ghcr.io/dante0747/airlock-deepseek:latest
-docker run -d --name deepseek --network none ghcr.io/dante0747/airlock-deepseek:latest
+docker pull ghcr.io/dante0747/airlock-qwen2.5:latest
+docker run -d --name qwen --network none ghcr.io/dante0747/airlock-qwen2.5:latest
 ```
 
 ## 🔐 Security — how internet access is blocked & why
 
-See the [root README security section](../README.md#-security-model) for the
+See the [root README security section](../../README.md#-security-model) for the
 full rationale. Three independent layers keep this model offline:
 
 1. **Weights baked at build time** → nothing to download at runtime.

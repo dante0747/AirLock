@@ -37,7 +37,7 @@ printf '%s' 'hf_xxx_your_token' > "$HOME/.hf_token"
 # 3. Build with the token as a BuildKit secret (never baked into the image)
 DOCKER_BUILDKIT=1 docker build \
   --secret id=hf_token,src="$HOME/.hf_token" \
-  -t airlock-mistral ./mistral
+  -t airlock-mistral-7b ./mistral/mistral-7b
 ```
 
 ### 🧪 Credential-free smoke test (open model)
@@ -45,7 +45,7 @@ DOCKER_BUILDKIT=1 docker build \
 ```bash
 docker build \
   --build-arg MODEL_ID=TinyLlama/TinyLlama-1.1B-Chat-v1.0 \
-  -t airlock-mistral ./mistral
+  -t airlock-mistral-7b ./mistral/mistral-7b
 ```
 
 The build needs internet (to install dependencies and download the weights).
@@ -54,7 +54,7 @@ The build needs internet (to install dependencies and download the weights).
 ## 🚀 2 · Run — fully air-gapped (recommended)
 
 ```bash
-docker run -d --name mistral --network none airlock-mistral
+docker run -d --name mistral --network none airlock-mistral-7b
 docker exec mistral python -c "import serve; print(serve.generate('[INST] Summarize the water cycle. [/INST]', 120))"
 ```
 
@@ -62,7 +62,7 @@ docker exec mistral python -c "import serve; print(serve.generate('[INST] Summar
 
 ```bash
 docker network create --internal llm-net
-docker run -d --name mistral --network llm-net -p 8000:8000 airlock-mistral
+docker run -d --name mistral --network llm-net -p 8000:8000 airlock-mistral-7b
 
 curl -s localhost:8000/generate \
   -H 'Content-Type: application/json' \
@@ -79,18 +79,18 @@ curl -s localhost:8000/generate \
 ## ⬇️ 4 · Pull the pre-built image from ghcr.io
 
 ```bash
-docker pull ghcr.io/dante0747/airlock-mistral:latest
-docker run -d --name mistral --network none ghcr.io/dante0747/airlock-mistral:latest
+docker pull ghcr.io/dante0747/airlock-mistral-7b:latest
+docker run -d --name mistral --network none ghcr.io/dante0747/airlock-mistral-7b:latest
 ```
 
 > [!CAUTION]
 > Mistral's license may restrict redistribution of weights. If you publish a
 > pre-built image, confirm you are permitted to, or publish only the open
-> smoke-test variant. See [`/docker-images`](../docker-images/README.md).
+> smoke-test variant. See [`/docker-images`](../../docker-images/README.md).
 
 ## 🔐 Security — how internet access is blocked & why
 
-See the [root README security section](../README.md#-security-model) for the
+See the [root README security section](../../README.md#-security-model) for the
 full rationale. Three independent layers keep this model offline:
 
 1. **Weights baked at build time** → nothing to download at runtime.
