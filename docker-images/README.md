@@ -52,6 +52,7 @@ Every image is published under the repo owner as `ghcr.io/dante0747/<image>`.
 | 🍃 Zephyr | `airlock-zephyr` | — | MIT; ~16 GB image |
 | 🔭 OLMo 2 | `airlock-olmo2` | — | Apache-2.0; fully open (weights + training data) |
 | ⚡ GLM-Edge | `airlock-glm-edge` | — | GLM-4 license; Z.ai on-device model |
+| ♾️ MiniMax-M3 | `airlock-minimax-m3` | — | Apache-2.0; large MoE reasoning model (`trust_remote_code`) |
 
 All images share the same tags: `latest`, `YYYYMMDD`, and `<git-sha>`.
 
@@ -79,6 +80,7 @@ ghcr.io/dante0747/airlock-smollm2
 ghcr.io/dante0747/airlock-zephyr
 ghcr.io/dante0747/airlock-olmo2
 ghcr.io/dante0747/airlock-glm-edge
+ghcr.io/dante0747/airlock-minimax-m3
 ```
 
 > [!TIP]
@@ -128,8 +130,9 @@ docker pull ghcr.io/dante0747/airlock-gpt2:20260616
 Pre-built images bundle model weights, which carry their **own** licenses:
 
 - ✅ **Open** (GPT-2, TinyLlama, Phi-2, Qwen2.5, Falcon3, BLOOM, Pythia, OPT,
-  GPT-Neo, DeepSeek, SmolLM2, Zephyr, Gemma 4) — generally safe to redistribute,
-  but check each model's specific terms (some, like OPT, are research/non-commercial).
+  GPT-Neo, DeepSeek, SmolLM2, Zephyr, Gemma 4, OLMo 2, MiniMax-M3) — generally
+  safe to redistribute, but check each model's specific terms (some, like OPT,
+  are research/non-commercial).
 - 🔑 **Gated** (Mistral, Gemma, StableLM, official Meta Llama) — may **restrict
   redistribution**.
 

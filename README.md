@@ -8,7 +8,7 @@
 
 [![Build & Push LLM Images](https://github.com/dante0747/AirLock/actions/workflows/docker-build.yml/badge.svg)](https://github.com/dante0747/AirLock/actions/workflows/docker-build.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
-[![Models](https://img.shields.io/badge/models-18-2f9e44?style=flat-square)](#-available-models)
+[![Models](https://img.shields.io/badge/models-19-2f9e44?style=flat-square)](#-available-models)
 [![Runtime](https://img.shields.io/badge/runtime-air--gapped-862e9c?style=flat-square)](#-security-model)
 [![Registry](https://img.shields.io/badge/registry-ghcr.io-2496ED?style=flat-square&logo=docker&logoColor=white)](#%EF%B8%8F-cicd)
 
@@ -40,7 +40,7 @@ environments, or anywhere *"the model must not phone home"* is a hard requiremen
 |---|---|
 | 🔌 **Truly offline** | Three independent layers (baked weights, library offline mode, kernel-level `--network none`) keep the model from ever reaching the internet. |
 | 📦 **Self-contained** | Weights ship *inside* the image. Pull once, run anywhere — no Hub access, no surprises at runtime. |
-| 🧩 **One folder per variant** | Models are grouped `family/variant`; adding one is a directory + one line in the CI matrix. 18 models ready out of the box. |
+| 🧩 **One folder per variant** | Models are grouped `family/variant`; adding one is a directory + one line in the CI matrix. 19 models ready out of the box. |
 | 🔐 **Secrets-safe** | Gated-model tokens are passed as **BuildKit secrets**, never baked into a layer or `docker history`. |
 | 🤖 **Hands-off CI/CD** | GitHub Actions builds every model in parallel and publishes to `ghcr.io` with the built-in `GITHUB_TOKEN`. |
 
@@ -85,7 +85,7 @@ matrix — the published image is named after the **variant** (leaf) directory
 
 ## 🧠 Available models
 
-**18 models out of the box.** Gated models need a HuggingFace token; everything
+**19 models out of the box.** Gated models need a HuggingFace token; everything
 else builds with zero credentials.
 
 | # | Model | Directory | Default weights | Gated? | Image (`ghcr.io/dante0747/…`) |
@@ -108,10 +108,11 @@ else builds with zero credentials.
 | 16 | 🍃 Zephyr | [`/zephyr/zephyr`](zephyr/zephyr/README.md) | `HuggingFaceH4/zephyr-7b-beta` | — | `airlock-zephyr` |
 | 17 | 🔭 OLMo 2 | [`/olmo/olmo2`](olmo/olmo2/README.md) | `allenai/OLMo-2-0425-1B-Instruct` | — | `airlock-olmo2` |
 | 18 | ⚡ GLM-Edge | [`/glm/glm-edge`](glm/glm-edge/README.md) | `zai-org/glm-edge-1.5b-chat` | — | `airlock-glm-edge` |
+| 19 | ♾️ MiniMax-M3 | [`/minimax/minimax-m3`](minimax/minimax-m3/README.md) | `MiniMaxAI/MiniMax-M3` | — | `airlock-minimax-m3` |
 
 Every image is published at **`ghcr.io/dante0747/airlock-<model>`** — see
 [`/docker-images`](docker-images/README.md#-full-image-paths) for the full,
-copy-paste-ready list of all 18 paths.
+copy-paste-ready list of all 19 paths.
 
 > [!NOTE]
 > 🔑 = gated. Gated directories default to a gated model, so their CI build needs
@@ -200,7 +201,7 @@ builds **every** model image and pushes them to the GitHub Container Registry
 
 - 🔁 **Triggers:** every push to `main`, every pull request (build-only, no
   push), a **daily schedule** (`03:00 UTC`), and manual `workflow_dispatch`.
-- 🧱 **Matrix build:** all 18 models build in parallel (`fail-fast: false`, so a
+- 🧱 **Matrix build:** all 19 models build in parallel (`fail-fast: false`, so a
   gated model missing its token won't sink the rest).
 - 🏷️ **Tags:** each image is pushed as `:latest`, `:YYYYMMDD`, and `:<git-sha>`.
 - 🔑 **Credentials:** publishing uses the built-in `GITHUB_TOKEN` — **no personal

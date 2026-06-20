@@ -61,6 +61,7 @@ jobs:
           - zephyr/zephyr
           - olmo/olmo2
           - glm/glm-edge
+          - minimax/minimax-m3
 
     steps:
       - name: Checkout
