@@ -7,7 +7,7 @@
 # variant of untagged enum ModelWrapper"; tokenizers 0.21.x handles them.
 # OLMo 2 in particular needs transformers >= 4.48 for the `olmo2` architecture.
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.3.1
+torch==2.12.0+cpu
 transformers==4.48.3
 tokenizers==0.21.0
 accelerate==0.33.0
