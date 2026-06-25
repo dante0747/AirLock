@@ -51,7 +51,10 @@ ENV HF_HUB_OFFLINE=1 \
 EXPOSE 8000
 
 # ---- Drop privileges (defense in depth) ------------------------------------
-RUN useradd --create-home appuser && chown -R appuser /app /models
+# Own only /app. /models stays root-owned but world-readable -- chowning the
+# multi-GB weights tree would copy every file into a new layer, doubling image
+# size and build disk (which broke multi-arch builds). serve.py only READS it.
+RUN useradd --create-home appuser && chown -R appuser /app
 USER appuser
 
 CMD ["python", "serve.py"]
