@@ -72,6 +72,14 @@ jobs:
           sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android "$AGENT_TOOLSDIRECTORY"
           df -h
 
+      # Register QEMU so the amd64 runner can also build the linux/arm64 leg.
+      # The build steps never EXECUTE native model code (download_model.py only
+      # imports huggingface_hub to fetch weights; torch is installed but not
+      # imported), so emulation overhead is limited to pip + the download, and
+      # there is no risk of an emulated illegal-instruction crash.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -109,6 +117,15 @@ jobs:
         with:
           context: ./${{ matrix.model }}
           file: ./${{ matrix.model }}/Dockerfile
+          # Build a single multi-arch image for both Intel and Apple Silicon.
+          # With more than one platform, build-push-action publishes a proper
+          # OCI manifest list (image index) under each tag, so `docker pull`
+          # automatically selects the right arch -- no more amd64-only images
+          # that fail / fall back to slow emulation on arm64 MacBooks.
+          # All 18 models resolve arm64 wheels for their pinned deps (torch
+          # 2.3.1/2.12.0 ship manylinux aarch64 wheels; tokenizers/safetensors/
+          # sentencepiece/llama-cpp-python all have aarch64 wheels too).
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ steps.meta.outputs.image }}:latest

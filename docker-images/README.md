@@ -55,6 +55,14 @@ Every image is published under the repo owner as `ghcr.io/dante0747/<image>`.
 
 All images share the same tags: `latest`, `YYYYMMDD`, and `<git-sha>`.
 
+### 🖥️ Supported architectures
+
+Every image is published as a **multi-arch manifest** covering **`linux/amd64`**
+(Intel/AMD) and **`linux/arm64`** (Apple Silicon — M1/M2/M3/M4 — and other
+ARM64 hosts). `docker pull` automatically selects the matching architecture, so
+the images run **natively** on Apple Silicon MacBooks with no emulation, no
+`--platform` flag, and no "image's platform does not match" warning.
+
 ### 📍 Full image paths
 
 Every image lives at `ghcr.io/dante0747/airlock-<model>`. The complete list
