@@ -1,7 +1,7 @@
 # CPU-only PyTorch wheels keep the image small. Drop the extra index URL if you
 # want CUDA/GPU builds instead.
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.3.1
+torch==2.12.0+cpu
 transformers==4.48.3
 tokenizers==0.21.0
 accelerate==0.33.0
