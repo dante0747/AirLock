@@ -48,6 +48,7 @@ Every image is published under the repo owner as `ghcr.io/dante0747/<image>`.
 | 📂 OPT | `airlock-opt` | — | Non-commercial license |
 | 🧬 GPT-Neo | `airlock-gptneo` | — | MIT licensed |
 | 💻 DeepSeek Coder | `airlock-deepseek-coder` | — | Code-specialized |
+| 🧑‍💻 CodeT5-small | `airlock-codet5-small` | — | Apache-2.0; compact encoder-decoder code model |
 | 🤏 SmolLM2 | `airlock-smollm2` | — | Apache-2.0, tiny |
 | 🍃 Zephyr | `airlock-zephyr` | — | MIT; ~16 GB image |
 | 🔭 OLMo 2 | `airlock-olmo2` | — | Apache-2.0; fully open (weights + training data) |
@@ -83,6 +84,7 @@ ghcr.io/dante0747/airlock-stablelm2
 ghcr.io/dante0747/airlock-opt
 ghcr.io/dante0747/airlock-gptneo
 ghcr.io/dante0747/airlock-deepseek-coder
+ghcr.io/dante0747/airlock-codet5-small
 ghcr.io/dante0747/airlock-smollm2
 ghcr.io/dante0747/airlock-zephyr
 ghcr.io/dante0747/airlock-olmo2
@@ -136,7 +138,7 @@ docker pull ghcr.io/dante0747/airlock-gpt2:20260616
 Pre-built images bundle model weights, which carry their **own** licenses:
 
 - ✅ **Open** (GPT-2, TinyLlama, Phi-2, Qwen2.5, Falcon3, BLOOM, Pythia, OPT,
-  GPT-Neo, DeepSeek, SmolLM2, Zephyr, Gemma 4) — generally safe to redistribute,
+  GPT-Neo, DeepSeek, CodeT5-small, SmolLM2, Zephyr, Gemma 4) — generally safe to redistribute,
   but check each model's specific terms (some, like OPT, are research/non-commercial).
 - 🔑 **Gated** (Mistral, Gemma, StableLM, official Meta Llama) — may **restrict
   redistribution**.

@@ -57,6 +57,7 @@ jobs:
           - opt/opt
           - gptneo/gptneo
           - deepseek/deepseek-coder
+          - codet5/codet5-small
           - smollm/smollm2
           - zephyr/zephyr
           - olmo/olmo2
@@ -122,7 +123,7 @@ jobs:
           # OCI manifest list (image index) under each tag, so `docker pull`
           # automatically selects the right arch -- no more amd64-only images
           # that fail / fall back to slow emulation on arm64 MacBooks.
-          # All 18 models resolve arm64 wheels for their pinned deps (torch
+          # All 19 models resolve arm64 wheels for their pinned deps (torch
           # 2.3.1/2.12.0 ship manylinux aarch64 wheels; tokenizers/safetensors/
           # sentencepiece/llama-cpp-python all have aarch64 wheels too).
           platforms: linux/amd64,linux/arm64
