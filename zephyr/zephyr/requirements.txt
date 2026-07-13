@@ -9,7 +9,7 @@
 # tokenizers must stay within transformers 5.0.0rc3's required range
 # (>=0.22.0,<=0.23.0); 0.21.0 conflicts and breaks `pip install`.
 --extra-index-url https://download.pytorch.org/whl/cpu
-transformers==5.0.0rc3
+transformers==5.5.0
 torch==2.12.0+cpu
 tokenizers==0.22.1
 accelerate==0.33.0
